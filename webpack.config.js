@@ -1,3 +1,5 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -26,5 +28,11 @@ module.exports = {
     externals: {
         "react": "React",
         "react-dom": "ReactDOM"
-    }
-};
+    },
+
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'index.html',
+            title: 'HTML Webpack Plugin'
+        })
+    ]};
