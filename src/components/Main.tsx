@@ -1,16 +1,16 @@
 import * as React from 'react'
 import {ITodo, default as ToDo} from "./ToDo";
-
+import HTML5Backend from 'react-dnd-html5-backend'
+import { DragDropContext } from 'react-dnd'
 interface IMainProps {
 }
 ;
 
 interface IMainState {
     todos: ITodo[];
-}
-;
+};
 
-export default class Main extends React.Component<IMainProps, IMainState> {
+class Main extends React.Component<IMainProps, IMainState> {
     constructor(props: IMainProps) {
         super(props);
         this.state = {
@@ -19,6 +19,7 @@ export default class Main extends React.Component<IMainProps, IMainState> {
                 {task: 'Buy Groceries'},
                 {task: 'Laundry'},
                 {task: 'Dance recital'},
+                {task: 'Hello'},
             ]
         };
     }
@@ -35,3 +36,5 @@ export default class Main extends React.Component<IMainProps, IMainState> {
         </div>
     }
 }
+
+export default DragDropContext(HTML5Backend)(Main);
