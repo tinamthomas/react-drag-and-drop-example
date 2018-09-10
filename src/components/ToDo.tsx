@@ -1,17 +1,24 @@
 import * as React from 'react'
-import { DragSource } from 'react-dnd';
+import { DragSource, DropTarget } from 'react-dnd';
 import {ReactNode} from "react";
+import * as _ from 'lodash';
 
 export interface ITodo {
     task: string;
+    id: string;
 }
 
-interface IItemProps {
+interface IItemBaseProps {
     todo: ITodo;
+    addAbove: (incomingItemId: string) => {};
+}
 
+interface IItemProps extends IItemBaseProps{
     // Injected by React DnD:
     isDragging: boolean
     connectDragSource: (component: any) => ReactNode;
+    connectDropTarget: (component: any) => ReactNode;
+    isOver: boolean;
 }
 
 interface IItemState {
@@ -25,11 +32,25 @@ function collect(connect: any, monitor: any) {
     };
 }
 
-const todoSource = {
-    beginDrag(props: any) {
+function drop(connect: any, monitor: any) {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver(),
+    };
+}
+
+const beginDrag = {
+    beginDrag(props: IItemBaseProps) {
         return {
             todo: props.todo
         };
+    }
+};
+
+const endDrag = {
+    drop(props: IItemBaseProps, monitor: any, component: any) {
+        const sourceItem = monitor.getItem().todo;
+        props.addAbove(sourceItem);
     }
 };
 
@@ -41,7 +62,7 @@ class ToDo extends React.Component<IItemProps, IItemState> {
         this.state = {done: false};
     }
     render() {
-        const { isDragging, connectDragSource } = this.props;
+        const { todo, isDragging, connectDragSource, connectDropTarget } = this.props;
 
         let todoStyle = {
             width: '150px',
@@ -53,10 +74,11 @@ class ToDo extends React.Component<IItemProps, IItemState> {
             paddingLeft: '8px',
             opacity: isDragging ? 0.5 : 1
         };
-        return connectDragSource(<div style={todoStyle}>
-            {this.props.todo.task}
-            </div>);
+        return connectDragSource(connectDropTarget(<div style={todoStyle}>
+            {todo.task}
+            </div>));
     }
 }
 
-export default DragSource(type, todoSource, collect)(ToDo);
+export default
+    _.flow([DragSource(type, beginDrag, collect), DropTarget(type, endDrag, drop)])(ToDo);
