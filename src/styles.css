@@ -1,0 +1,6 @@
+.item:hover{
+    background-color: lightgray;
+}
+.item {
+    background-color: grey;
+}

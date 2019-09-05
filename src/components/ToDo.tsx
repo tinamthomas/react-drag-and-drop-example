@@ -74,7 +74,7 @@ class ToDo extends React.Component<IItemProps, IItemState> {
             paddingLeft: '8px',
             opacity: isDragging ? 0.5 : 1
         };
-        return connectDragSource(connectDropTarget(<div style={todoStyle}>
+        return connectDragSource(connectDropTarget(<div style={todoStyle} className='item'>
             {todo.task}
             </div>));
     }
